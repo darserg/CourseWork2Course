@@ -5,6 +5,7 @@ class Generator:
     def __init__(self, lenth=4):
         self.lenth = lenth
         self.alph = list(string.ascii_uppercase)
+        self.complex_alph = [x for x in self.alph + list('0123456789')]
         
     def generate_numbers(self) -> str:
         number = randint(0, 10 ** self.lenth)
@@ -17,4 +18,10 @@ class Generator:
         result = ""
         while len(result) < self.lenth:
             result += str(choice(self.alph))
-        return str(result)
+        return result
+    
+    def complex_code(self):
+        result = ""
+        while len(result) < self.lenth:
+            result += str(choice(self.complex_alph))
+        return result
