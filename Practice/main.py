@@ -1,6 +1,7 @@
-from generator import Generator
+import generator
+import string
 
-code_gen = Generator(4)
+code_gen = generator.Generator()
 
-print("Only numbers: ", code_gen.generate_numbers)
-print("Only characters of latin: ", code_gen.generate_chars)
+print("Only numbers:", code_gen.generate_numbers())
+print("Only characters of latin:", code_gen.generate_chars())

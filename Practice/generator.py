@@ -4,10 +4,10 @@ import string
 class Generator:
     def __init__(self, lenth=4):
         self.lenth = lenth
-        self.alph = shuffle(list(string.ascii_lowercase))
+        self.alph = list(string.ascii_uppercase)
         
     def generate_numbers(self) -> str:
-        number = randint(0, 10 * self.lenth)
+        number = randint(0, 10 ** self.lenth)
         result = str(number)
         while len(result) < self.lenth:
             result = "0" + result
@@ -16,6 +16,5 @@ class Generator:
     def generate_chars(self) -> str:
         result = ""
         while len(result) < self.lenth:
-            result += choice(self.alph)
+            result += str(choice(self.alph))
         return str(result)
-
