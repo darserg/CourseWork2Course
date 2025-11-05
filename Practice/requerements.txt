@@ -1,0 +1,6 @@
+iniconfig
+packaging
+pluggy
+Pygments
+pytest
+setuptools
