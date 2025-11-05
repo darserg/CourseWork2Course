@@ -1,5 +1,5 @@
 import generator
-# Tests for generator
+# Basic Usage for Generator
 code_gen = generator.Generator()
 
 print("Only numbers:", code_gen.generate_numbers())
