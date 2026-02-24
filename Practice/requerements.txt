@@ -1,6 +1,1 @@
-iniconfig
-packaging
-pluggy
-Pygments
-pytest
-setuptools
+python-dotenv>=1.0.0

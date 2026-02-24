@@ -1,27 +1,17 @@
-from random import randint, choice, shuffle
-import string
+import secrets
+from datetime import datetime, timedelta
 
-class Generator:
-    def __init__(self, lenth=4):
-        self.lenth = lenth
-        self.alph = list(string.ascii_uppercase)
-        self.complex_alph = [x for x in self.alph + list('0123456789')]
-        
-    def generate_numbers(self) -> str:
-        number = randint(0, 10 ** self.lenth)
-        result = str(number)
-        while len(result) < self.lenth:
-            result = "0" + result
-        return str(result)
-    
-    def generate_chars(self) -> str:
-        result = ""
-        while len(result) < self.lenth:
-            result += str(choice(self.alph))
-        return result
-    
-    def complex_code(self):
-        result = ""
-        while len(result) < self.lenth:
-            result += str(choice(self.complex_alph))
-        return result
+class CodeGenerator:
+    CODE_LENGTH = 6
+    EXPIRY_MINUTES = 5
+
+    def generate(self) -> str:
+        return secrets.token_hex(3).upper()
+
+    def get_expiry_time(self) -> datetime:
+        return datetime.now() + timedelta(minutes=self.EXPIRY_MINUTES)
+
+    def generate_with_expiry(self) -> tuple[str, datetime]:
+        code = self.generate()
+        expiry = self.get_expiry_time()
+        return code, expiry
