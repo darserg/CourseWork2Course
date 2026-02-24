@@ -1,3 +1,4 @@
+# email_sender.py
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -13,13 +14,15 @@ class EmailSender:
 
     def send_verification_code(self, recipient_email: str, code: str) -> bool:
         try:
-            message = MIMEMultipart()
+            print(f"📧 Подготовка письма для {recipient_email}...")
+            
+            message = MIMEMultipart('alternative')
             message['From'] = self.sender_email
             message['To'] = recipient_email
-            message['Subject'] = 'Код подтверждения (2FA)'
+            message['Subject'] = '🔐 Код подтверждения (2FA)'
 
-            body = f"""
-Здравствуйте!
+            # Текст письма с кириллицей
+            body = f"""Здравствуйте!
 
 Ваш код подтверждения: {code}
 
@@ -27,16 +30,31 @@ class EmailSender:
 Если вы не запрашивали код, проигнорируйте это письмо.
 
 С уважением,
-Ваша команда безопасности
-"""
-            message.attach(MIMEText(body, 'plain', 'utf-8'))
+Ваша команда безопасности 🛡️"""
 
+            # 🔥 Ключевой момент: charset='utf-8' для поддержки кириллицы
+            part = MIMEText(body, 'plain', 'utf-8')
+            message.attach(part)
+
+            print("🔌 Подключение к SMTP...")
             with smtplib.SMTP(self.SMTP_SERVER, self.SMTP_PORT) as server:
                 server.starttls()
+                print("🔐 Авторизация...")
                 server.login(self.sender_email, self.sender_password)
+                print("🚀 Отправка...")
+                # 🔥 send_message() корректно кодирует UTF-8
                 server.send_message(message)
-
+                
+            print("✅ Письмо успешно отправлено!")
             return True
+            
+        except UnicodeEncodeError as e:
+            print(f"❌ Ошибка кодировки: {e}")
+            print("💡 Проверьте, что MIMEText создан с charset='utf-8'")
+            return False
+        except smtplib.SMTPAuthenticationError as e:
+            print(f"❌ Ошибка авторизации: {e}")
+            return False
         except Exception as e:
-            print(f"❌ Ошибка отправки email: {e}")
+            print(f"❌ Ошибка: {type(e).__name__}: {e}")
             return False

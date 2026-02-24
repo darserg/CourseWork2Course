@@ -1,76 +1,51 @@
 import unittest
-from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
-from generator import CodeGenerator
-from email_sender import EmailSender
-from main import TwoFactorAuth
+import os
+from user_store import UserStore
 
-class TestCodeGenerator(unittest.TestCase):
+class TestUserStore(unittest.TestCase):
     def setUp(self):
-        self.generator = CodeGenerator()
+        self.test_db = "test_users.json"
+        self.store = UserStore(self.test_db)
+        self.test_email = "test@example.com"
+        self.test_password = "securepass123"
 
-    def test_code_length(self):
-        code = self.generator.generate()
-        self.assertEqual(len(code), 6)
+    def tearDown(self):
+        # Удаляем тестовый файл после каждого теста
+        if os.path.exists(self.test_db):
+            os.remove(self.test_db)
 
-    def test_code_format(self):
-        code = self.generator.generate()
-        self.assertTrue(code.isalnum())
-        self.assertEqual(code, code.upper())
+    def test_register_new_user(self):
+        result = self.store.register_user(self.test_email, self.test_password)
+        self.assertTrue(result['success'])
+        self.assertIsNotNone(self.store.get_user(self.test_email))
 
-    def test_expiry_time(self):
-        expiry = self.generator.get_expiry_time()
-        expected = datetime.now() + timedelta(minutes=5)
-        self.assertAlmostEqual(expiry, expected, delta=timedelta(seconds=1))
+    def test_register_duplicate_user(self):
+        self.store.register_user(self.test_email, self.test_password)
+        result = self.store.register_user(self.test_email, "anotherpass")
+        self.assertFalse(result['success'])
 
-class TestEmailSender(unittest.TestCase):
-    @patch('email.smtplib.SMTP')
-    def test_send_success(self, mock_smtp):
-        sender = EmailSender()
-        mock_server = MagicMock()
-        mock_smtp.return_value.__enter__.return_value = mock_server
-        result = sender.send_verification_code("test@example.com", "ABC123")
-        self.assertTrue(result)
+    def test_verify_correct_password(self): 
+        self.store.register_user(self.test_email, self.test_password)
+        self.assertTrue(self.store.verify_user(self.test_email, self.test_password))
 
-    @patch('email.smtplib.SMTP')
-    def test_send_failure(self, mock_smtp):
-        mock_smtp.side_effect = Exception("SMTP Error")
-        sender = EmailSender()
-        result = sender.send_verification_code("test@example.com", "ABC123")
-        self.assertFalse(result)
+    def test_verify_wrong_password(self):
+        self.store.register_user(self.test_email, self.test_password)
+        self.assertFalse(self.store.verify_user(self.test_email, "wrongpass"))
 
-class TestTwoFactorAuth(unittest.TestCase):
-    def setUp(self):
-        self.auth = TwoFactorAuth()
-        self.email = "test@example.com"
+    def test_short_password_rejected(self):
+        result = self.store.register_user(self.test_email, "123")
+        self.assertFalse(result['success'])
 
-    @patch.object(EmailSender, 'send_verification_code', return_value=True)
-    def test_request_code(self, mock_send):
-        result = self.auth.request_code(self.email)
-        self.assertTrue(result)
-        self.assertIn(self.email, self.auth.codes)
+    def test_set_verified(self):
+        self.store.register_user(self.test_email, self.test_password)
+        self.store.set_verified(self.test_email, True)
+        user = self.store.get_user(self.test_email)
+        self.assertTrue(user['is_verified'])
 
-    def test_verify_correct_code(self):
-        self.auth.request_code(self.email)
-        code = self.auth.codes[self.email]['code']
-        self.assertTrue(self.auth.verify_code(self.email, code))
-        self.assertNotIn(self.email, self.auth.codes)
-
-    def test_verify_wrong_code(self):
-        self.auth.request_code(self.email)
-        self.assertFalse(self.auth.verify_code(self.email, "WRONG1"))
-        self.assertEqual(self.auth.codes[self.email]['attempts'], 1)
-
-    def test_verify_expired_code(self):
-        self.auth.request_code(self.email)
-        self.auth.codes[self.email]['expiry'] = datetime.now() - timedelta(minutes=10)
-        self.assertFalse(self.auth.verify_code(self.email, "ABC123"))
-
-    def test_max_attempts(self):
-        self.auth.request_code(self.email)
-        for _ in range(3):
-            self.auth.verify_code(self.email, "WRONG1")
-        self.assertNotIn(self.email, self.auth.codes)
+    def test_delete_user(self):
+        self.store.register_user(self.test_email, self.test_password)
+        self.assertTrue(self.store.delete_user(self.test_email))
+        self.assertIsNone(self.store.get_user(self.test_email))
 
 if __name__ == '__main__':
     unittest.main()
