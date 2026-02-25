@@ -47,5 +47,6 @@ class TestUserStore(unittest.TestCase):
         self.assertTrue(self.store.delete_user(self.test_email))
         self.assertIsNone(self.store.get_user(self.test_email))
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -41,12 +41,12 @@ class TwoFactorAuth:
 
         if datetime.now() > data['expiry']:
             del self.codes[user_email]
-            print("⏰ Код истёк.")
+            print("Код истёк.")
             return False
 
         if data['attempts'] >= self.max_attempts:
             del self.codes[user_email]
-            print("🔒 Превышено количество попыток.")
+            print("Превышено количество попыток.")
             return False
 
         if secrets.compare_digest(data['code'], user_code.upper()):
@@ -55,7 +55,7 @@ class TwoFactorAuth:
             return True
 
         data['attempts'] += 1
-        print(f"❌ Неверный код. Осталось попыток: {self.max_attempts - data['attempts']}")
+        print(f"Неверный код. Осталось попыток: {self.max_attempts - data['attempts']}")
         return False
 
 def main():
@@ -63,11 +63,11 @@ def main():
     user_store = UserStore("users.json")
     auth = TwoFactorAuth(user_store)
     
-    print("🔐 Система двухфакторной аутентификации")
+    print("Система двухфакторной аутентификации")
     print("1 — Войти\n2 — Зарегистрироваться\n")
     choice = input("Выберите действие: ").strip()
 
-    email = input("📧 Email: ").strip()
+    email = input("Email: ").strip()
     
     if choice == "2":
         password = input("🔑 Придумайте пароль (мин. 6 символов): ").strip()
@@ -78,32 +78,32 @@ def main():
 
     elif choice == "1":
         if not user_store.get_user(email):
-            print("❌ Пользователь не найден. Сначала зарегистрируйтесь.")
+            print("Пользователь не найден. Сначала зарегистрируйтесь.")
             return
     else:
-        print("❌ Неверный выбор")
+        print("Неверный выбор")
         return
 
     # Проверка пароля
-    password = input("🔑 Введите пароль: ").strip()
+    password = input("Введите пароль: ").strip()
     if not auth.login(email, password):
-        print("❌ Неверный пароль")
+        print("Неверный пароль")
         return
 
-    print("✅ Пароль верен. Требуется подтверждение по email.")
+    print("Пароль верен. Требуется подтверждение по email.")
     
     # Отправка и проверка кода 2FA
     if not auth.request_code(email):
-        print("❌ Не удалось отправить код.")
+        print("Не удалось отправить код.")
         return
 
     for attempt in range(3):
         code = input(f"Введите код ({3 - attempt} попыток осталось): ").strip()
         if auth.verify_code(email, code):
-            print("🎉 Успешная аутентификация! Добро пожаловать.")
+            print("Успешная аутентификация! Добро пожаловать.")
             return
 
-    print("🔒 Доступ заблокирован.")
+    print("Доступ заблокирован.")
 
 if __name__ == "__main__":
     main()
