@@ -1,5 +1,5 @@
-from src.generator import CodeGenerator
-from src.email_sender import EmailSender
+from src.services.generator import CodeGenerator
+from src.services.email_sender import EmailSender
 from src.infrastructure.user_store import UserStore
 from datetime import datetime
 from typing import Dict
