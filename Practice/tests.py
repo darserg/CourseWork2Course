@@ -1,6 +1,6 @@
 import unittest
 import os
-from user_store import UserStore
+from infrastructure.user_store import UserStore
 
 class TestUserStore(unittest.TestCase):
     def setUp(self):

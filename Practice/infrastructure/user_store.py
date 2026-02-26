@@ -27,10 +27,12 @@ class UserStore:
         with open(self.db_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    def _hash_password(self, password: str, salt: str) -> str:
+    @staticmethod
+    def _hash_password(password: str, salt: str) -> str:
         """Хеширует пароль с солью (SHA-256 для простоты)"""
         return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
 
+    @staticmethod
     def _generate_salt(self) -> str:
         """Генерирует случайную соль"""
         return secrets.token_hex(16)

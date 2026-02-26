@@ -1,6 +1,6 @@
-from generator import CodeGenerator
-from email_sender import EmailSender
-from user_store import UserStore
+from src.generator import CodeGenerator
+from src.email_sender import EmailSender
+from infrastructure.user_store import UserStore
 from datetime import datetime
 from typing import Dict
 import secrets

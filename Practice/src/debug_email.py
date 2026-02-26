@@ -1,4 +1,3 @@
-# debug_email.py
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -32,13 +31,13 @@ def test_email():
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         print("Вход выполнен!")
         
-        print("\n📧 Отправка письма...")
-        # 🔥 send_message() корректно обрабатывает UTF-8
+        print("\n Отправка письма...")
+        #  send_message() корректно обрабатывает UTF-8
         server.send_message(message)
         print("Письмо отправлено!")
         
         server.quit()
-        print("\n🎉 Проверьте почту (и папку Спам)!")
+        print("\nПроверьте почту (и папку Спам)!")
         
     except UnicodeEncodeError as e:
         print(f"\nОшибка кодировки: {e}")
