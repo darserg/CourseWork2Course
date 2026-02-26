@@ -5,10 +5,12 @@ from pathlib import Path
 from typing import Optional, Dict, List
 from datetime import datetime
 
+
+# noinspection PyArgumentList
 class UserStore:
     """Простое файловое хранилище пользователей (заглушка для БД)"""
     
-    def __init__(self, db_file: str = "users.json"):
+    def __init__(self, db_file: str = "src/infrastructure/users.json"):
         self.db_path = Path(db_file)
         self._ensure_db_exists()
 
@@ -29,11 +31,10 @@ class UserStore:
 
     @staticmethod
     def _hash_password(password: str, salt: str) -> str:
-        """Хеширует пароль с солью (SHA-256 для простоты)"""
         return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
 
     @staticmethod
-    def _generate_salt(self) -> str:
+    def _generate_salt() -> str:
         """Генерирует случайную соль"""
         return secrets.token_hex(16)
 
