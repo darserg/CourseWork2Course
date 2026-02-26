@@ -1,6 +1,6 @@
 from src.services.generator import CodeGenerator
 from src.services.email_sender import EmailSender
-from src.infrastructure.user_store import UserStore
+from infrastructure.user_store import UserStore
 from datetime import datetime
 from typing import Dict
 import secrets
@@ -60,7 +60,7 @@ class TwoFactorAuth:
 
 def main():
     # Инициализируем хранилище и систему 2FA
-    user_store = UserStore("users.json")
+    user_store = UserStore("../users.json")
     auth = TwoFactorAuth(user_store)
     
     print("Система двухфакторной аутентификации")

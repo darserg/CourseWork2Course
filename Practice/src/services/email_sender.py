@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from passw import EMAIL_ADDRESS, EMAIL_PASSWORD
+from src.passw import EMAIL_ADDRESS, EMAIL_PASSWORD
 
 class EmailSender:
     SMTP_SERVER = 'smtp.gmail.com'

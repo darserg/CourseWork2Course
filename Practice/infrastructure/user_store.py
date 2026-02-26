@@ -10,7 +10,7 @@ from datetime import datetime
 class UserStore:
     """Простое файловое хранилище пользователей (заглушка для БД)"""
     
-    def __init__(self, db_file: str = "src/infrastructure/users.json"):
+    def __init__(self, db_file: str = "users.json"):
         self.db_path = Path(db_file)
         self._ensure_db_exists()
 
