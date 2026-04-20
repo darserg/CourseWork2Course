@@ -33,7 +33,7 @@ class UserStore:
         return hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
 
     @staticmethod
-    def _generate_salt(self) -> str:
+    def _generate_salt() -> str:
         """Генерирует случайную соль"""
         return secrets.token_hex(16)
 

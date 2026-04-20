@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Модуль авторизации</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    button {
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .row > * {
+      flex: 1 1 180px;
+    }
+    .hint {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+    .status {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #0f172a;
+      white-space: pre-wrap;
+      min-height: 48px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Авторизация (HTML + JS)</h1>
+
+    <section class="grid">
+      <input id="email" type="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Пароль" />
+      <div class="row">
+        <button id="registerBtn">Регистрация</button>
+        <button id="loginBtn">Вход (получить код)</button>
+      </div>
+      <p class="hint">После входа сервер сгенерирует код подтверждения (для демо выводится на экран).</p>
+    </section>
+
+    <section class="grid">
+      <input id="code" type="text" placeholder="Код подтверждения" />
+      <button id="verifyBtn">Подтвердить код</button>
+    </section>
+
+    <div id="status" class="status">Ожидание действий...</div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

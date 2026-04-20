@@ -6,7 +6,7 @@ class CodeGenerator:
     EXPIRY_MINUTES = 5
 
     @staticmethod
-    def generate(self) -> str:
+    def generate() -> str:
         return secrets.token_hex(3).upper()
 
     def get_expiry_time(self) -> datetime:
