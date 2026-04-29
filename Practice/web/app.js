@@ -31,7 +31,11 @@ registerBtn.addEventListener("click", async () => {
   }
 
   const result = await callApi("/api/register", { email, password });
-  showStatus(result.message, !result.success);
+  if (result.success) {
+    window.location.href = "/success.html";
+  } else {
+    showStatus(result.message, true);
+  }
 });
 
 loginBtn.addEventListener("click", async () => {
@@ -49,8 +53,7 @@ loginBtn.addEventListener("click", async () => {
     return;
   }
 
-  const debugCodeMessage = result.debug_code ? `\nКод: ${result.debug_code}` : "";
-  showStatus(`${result.message}${debugCodeMessage}`);
+  showStatus(result.message);
 });
 
 verifyBtn.addEventListener("click", async () => {

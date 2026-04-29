@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 
 from infrastructure.user_store import UserStore
 from src.generator import CodeGenerator
+from src.email_sender import EmailSender
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -19,6 +20,7 @@ class AuthApi:
     def __init__(self, user_store: UserStore):
         self.user_store = user_store
         self.generator = CodeGenerator()
+        self.email_sender = EmailSender()
         self.codes: dict[str, dict[str, Any]] = {}
         self.max_attempts = 3
 
@@ -32,13 +34,22 @@ class AuthApi:
         code, expiry = self.generator.generate_with_expiry()
         self.codes[email] = {"code": code, "expiry": expiry, "attempts": 0}
 
-        # В демо-режиме возвращаем код в ответе, потому что SMTP может быть не настроен.
-        return {
-            "success": True,
-            "message": "Код подтверждения сгенерирован",
-            "expires_at": expiry.isoformat(),
-            "debug_code": code,
-        }
+        # Отправляем код по email
+        email_sent = self.email_sender.send_verification_code(email, code)
+        
+        if email_sent:
+            return {
+                "success": True,
+                "message": "Код подтверждения отправлен на ваш email",
+                "expires_at": expiry.isoformat(),
+            }
+        else:
+            # Если email не отправился, возвращаем ошибку
+            del self.codes[email]
+            return {
+                "success": False,
+                "message": "Ошибка при отправке кода. Попробуйте позже."
+            }
 
     def verify_code(self, email: str, code: str) -> dict[str, Any]:
         if email not in self.codes:
@@ -112,6 +123,9 @@ class WebHandler(BaseHTTPRequestHandler):
             return
         if path == "/app.js":
             self._send_file(WEB_DIR / "app.js")
+            return
+        if path == "/success.html":
+            self._send_file(WEB_DIR / "success.html")
             return
         self.send_error(404, "Not found")
 

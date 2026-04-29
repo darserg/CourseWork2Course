@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from passw import EMAIL_ADDRESS, EMAIL_PASSWORD
+from .passw import EMAIL_ADDRESS, EMAIL_PASSWORD
 
 def test_email():
     print("Диагностика отправки email...")
